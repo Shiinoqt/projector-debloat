@@ -25,7 +25,7 @@ Device knowledge lives in JSON profiles under [`profiles/`](profiles/), so addin
    ```
    python projector_debloat.py plan
    ```
-   The profile is detected from the device. Pass `--profile profiles/<file>.json` to choose one yourself, and `--include-optional` to also disable the `optional` tier.
+   The profile is detected from the device. Pass `--profile profiles/<file>.json` to choose one yourself, and `--include-optional` to also disable the `optional` tier. To disable only some optional packages, repeat `--include PACKAGE` instead.
 5. **Apply:**
    ```
    python projector_debloat.py apply
@@ -40,7 +40,7 @@ If more than one device is connected, add `--serial SERIAL` before the command, 
 python projector_debloat.py restore
 ```
 
-This re-enables every package that was enabled in the newest snapshot for this model and is disabled now. Packages that were already disabled before the tool ran stay as they were. Use `--snapshot PATH` to pick an older snapshot.
+This re-enables every package that was enabled in the oldest snapshot for this model (taken before the tool's first change) and is disabled now, so it undoes every `apply` at once. Packages that were already disabled before the tool ran stay as they were. To undo only a later `apply`, pass its snapshot with `--snapshot PATH`.
 
 ## Safety
 

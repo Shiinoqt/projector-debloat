@@ -145,6 +145,14 @@ class PlanTest(unittest.TestCase):
     def test_include_optional(self):
         self.assertEqual(self.actions(PROFILE, include_optional=True)["com.example.gallery"], "disable")
 
+    def test_include_single_optional(self):
+        rows = pd.build_plan(PROFILE, self.device, include=["com.example.gallery"])
+        self.assertEqual({row["package"]: row["action"] for row in rows}["com.example.gallery"], "disable")
+
+    def test_include_rejects_non_optional(self):
+        with self.assertRaises(SystemExit):
+            pd.build_plan(PROFILE, self.device, include=["com.example.typo"])
+
     def test_denylist(self):
         for package_id in ("android", "com.android.settings", "com.android.providers.contacts",
                            "com.google.android.inputmethod.latin", "com.android.networkstack.tethering",
@@ -214,7 +222,7 @@ class RestoreLogicTest(unittest.TestCase):
         }}
         self.assertEqual(pd.build_restore(snapshot, device), ["a"])
 
-    def test_find_latest_snapshot_for_model(self):
+    def test_find_first_snapshot_for_model(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
             for name, model, created in (("old.json", "GM200", "2026-01-01T10:00:00"),
@@ -223,8 +231,8 @@ class RestoreLogicTest(unittest.TestCase):
                 pd.write_json(tmp / name, {"created": created, "properties": {"ro.product.model": model}, "packages": []})
             (tmp / "broken.json").write_text("{not json", encoding="utf-8")
             with mock.patch.object(pd, "SNAPSHOT_DIR", tmp):
-                self.assertEqual(pd.find_latest_snapshot("GM200"), tmp / "new.json")
-                self.assertIsNone(pd.find_latest_snapshot("nope"))
+                self.assertEqual(pd.find_first_snapshot("GM200"), tmp / "old.json")
+                self.assertIsNone(pd.find_first_snapshot("nope"))
 
 
 class CommandsTest(unittest.TestCase):

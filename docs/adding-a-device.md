@@ -38,7 +38,7 @@ Copy an existing file in `profiles/` to `profiles/<brand>-<model>.json` (lowerca
 | Tier | Meaning |
 |---|---|
 | `safe` | Disabled by default. Use it only when you have disabled it yourself and checked that nothing broke. |
-| `optional` | Disabled only with `--include-optional`, e.g. a stock app some people actually use. |
+| `optional` | Disabled only with `--include-optional` (or one by one with `--include PACKAGE`), e.g. a stock app some people actually use. |
 | `keep` | Never touched. Use it to **document** packages that look like bloat but aren't: keystone correction, focus motor, panel/HDMI services, remote pairing. |
 
 **When unsure, use `keep` and write what you know in the note.** A wrong `keep` costs nothing. A wrong `safe` can break keystone or the remote for everyone with that projector.

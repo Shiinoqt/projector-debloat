@@ -340,15 +340,20 @@ def choose_profile(profile_arg, props):
 
 # --- plan -----------------------------------------------------------------------
 
-def build_plan(profile, device, include_optional=False):
-    """One row per profile package: {package, tier, action, note}."""
+def build_plan(profile, device, include_optional=False, include=()):
+    """One row per profile package: {package, tier, action, note}.
+    `include` lists single 'optional' packages to disable without the whole tier."""
+    optional_ids = {entry["id"] for entry in profile["packages"] if entry["tier"] == "optional"}
+    unknown = sorted(set(include) - optional_ids)
+    if unknown:
+        die("--include only takes 'optional' packages from the profile, not: " + ", ".join(unknown))
     rows = []
     for entry in profile["packages"]:
         package_id, tier = entry["id"], entry["tier"]
         installed = device["packages"].get(package_id)
         if tier == "keep":
             action = "keep"
-        elif tier == "optional" and not include_optional:
+        elif tier == "optional" and not include_optional and package_id not in include:
             action = "skip (optional)"
         elif is_denylisted(package_id):
             action = "blocked (denylist)"
@@ -468,9 +473,10 @@ def load_snapshot(path):
     return data
 
 
-def find_latest_snapshot(model):
-    """Newest snapshot (by its 'created' field) whose model equals this device's, or None."""
-    best_path, best_created = None, ""
+def find_first_snapshot(model):
+    """Oldest snapshot (by its 'created' field) whose model equals this device's, or None.
+    It holds the state before the tool's first change, so restoring it undoes every apply."""
+    best_path, best_created = None, None
     for path in SNAPSHOT_DIR.glob("*.json"):
         try:
             with open(path, encoding="utf-8") as f:
@@ -479,7 +485,7 @@ def find_latest_snapshot(model):
             matches = data["properties"]["ro.product.model"] == model
         except (OSError, ValueError, KeyError, TypeError):
             continue
-        if matches and created > best_created:
+        if matches and (best_created is None or created < best_created):
             best_path, best_created = path, created
     return best_path
 
@@ -532,7 +538,7 @@ def cmd_dump(args, run):
 def cmd_plan(args, run):
     device = read_device(run)
     profile_path, profile = choose_profile(args.profile, device["props"])
-    rows = build_plan(profile, device, args.include_optional)
+    rows = build_plan(profile, device, args.include_optional, args.include)
     show_plan(profile_path, profile, rows)
     problem = check_launcher(rows, device)
     if problem:
@@ -544,7 +550,7 @@ def cmd_plan(args, run):
 def cmd_apply(args, run):
     device = read_device(run)
     profile_path, profile = choose_profile(args.profile, device["props"])
-    rows = build_plan(profile, device, args.include_optional)
+    rows = build_plan(profile, device, args.include_optional, args.include)
     show_plan(profile_path, profile, rows)
 
     problem = check_launcher(rows, device)
@@ -575,7 +581,7 @@ def cmd_restore(args, run):
         snapshot_path = Path(args.snapshot)
     else:
         model = device["props"].get("ro.product.model", "")
-        snapshot_path = find_latest_snapshot(model)
+        snapshot_path = find_first_snapshot(model)
         if snapshot_path is None:
             die("no snapshot for model '{}' in {}. Pass --snapshot PATH.".format(model, SNAPSHOT_DIR))
     snapshot = load_snapshot(snapshot_path)
@@ -630,12 +636,14 @@ def build_parser():
     profile_options.add_argument("--profile", help="profile JSON file (default: auto-detect from profiles/)")
     profile_options.add_argument("--include-optional", action="store_true",
                                  help="also disable packages in the 'optional' tier")
+    profile_options.add_argument("--include", action="append", default=[], metavar="PACKAGE",
+                                 help="also disable this one 'optional' package (repeatable)")
     sub.add_parser("plan", parents=[profile_options], help="show what apply would do (changes nothing)")
     apply_parser = sub.add_parser("apply", parents=[profile_options], help="disable packages, after a snapshot")
     apply_parser.add_argument("--yes", action="store_true", help="do not ask for confirmation")
 
     restore_parser = sub.add_parser("restore", help="re-enable packages disabled by apply")
-    restore_parser.add_argument("--snapshot", help="snapshot file (default: newest for this model)")
+    restore_parser.add_argument("--snapshot", help="snapshot file (default: oldest for this model, which undoes every apply)")
     restore_parser.add_argument("--yes", action="store_true", help="do not ask for confirmation")
 
     validate_parser = sub.add_parser("validate", help="check profile files against the schema")
