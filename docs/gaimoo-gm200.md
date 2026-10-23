@@ -4,7 +4,8 @@ Tested on a retail unit. The result is ad-free, uses only free apps, and every s
 
 ## About the device
 
-- It reports itself as a Google "ADT-3" (`ro.product.model=adt3`). The real hardware is an **Allwinner H713** (`ro.hardware=sun50iw12p1`, `ro.board.platform=ares`), with Android 11, a 32-bit userspace (`armeabi-v7a`), about 1 GB of RAM and a 1280x720 panel.
+- The hardware is an **Allwinner H713** (`ro.hardware=sun50iw12p1`, `ro.board.platform=ares`), with Android 11, a 32-bit userspace (`armeabi-v7a`), about 1 GB of RAM and a 1280x720 panel.
+- The firmware's read-only build properties use a generic `adt3` identity (`ro.product.model=adt3`, brand `ADT-3`, manufacturer `askey`), not "GM200". The device name you set in Settings is separate (`device_name`): it is what casting and Bluetooth show, and changing it does not affect profile detection.
 - It runs the HTC/Hotack firmware also found on the Portronics Beem 470 and Magcubic HY3xx projectors.
 - The settings app is `com.htc.htcsettings`; there is no `com.android.settings`.
 
