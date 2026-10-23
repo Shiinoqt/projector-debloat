@@ -1,0 +1,6 @@
+# Runtime output: snapshots and dumps describe your own device
+snapshots/
+dump-*.json
+
+__pycache__/
+*.pyc

@@ -1,0 +1,29 @@
+{
+  "comment": "Fake projector used by the tests. Package states change as the fake adb runs pm commands.",
+  "props": {
+    "ro.product.model": "FakeBeam 1",
+    "ro.product.brand": "FakeBrand",
+    "ro.product.manufacturer": "FakeCorp",
+    "ro.product.device": "fakebeam",
+    "ro.board.platform": "fakechip",
+    "ro.hardware": "fakehw",
+    "ro.build.version.release": "11",
+    "ro.build.version.sdk": "30",
+    "ro.build.fingerprint": "FakeBrand/fakebeam/fakebeam:11/RP1A/1:user/release-keys",
+    "ro.product.cpu.abi": "armeabi-v7a",
+    "ro.serialno": "SECRET123456"
+  },
+  "packages": [
+    {"id": "android", "system": true, "enabled": true, "path": "/system/framework/framework-res.apk"},
+    {"id": "com.android.settings", "system": true, "enabled": true, "path": "/system/priv-app/Settings/Settings.apk"},
+    {"id": "com.android.providers.media", "system": true, "enabled": true, "path": "/system/priv-app/MediaProvider/MediaProvider.apk"},
+    {"id": "com.example.launcher", "system": true, "enabled": true, "path": "/system/priv-app/Launcher/Launcher.apk"},
+    {"id": "com.example.store", "system": true, "enabled": true, "path": "/system/app/Store/Store.apk"},
+    {"id": "com.example.ads", "system": true, "enabled": true, "path": "/system/app/Ads/Ads.apk"},
+    {"id": "com.example.already.off", "system": true, "enabled": false, "path": "/system/app/Off/Off.apk"},
+    {"id": "com.example.keystone", "system": true, "enabled": true, "path": "/system/app/Keystone/Keystone.apk"},
+    {"id": "com.example.gallery", "system": false, "enabled": true, "path": "/data/app/~~Q1w2e3==/com.example.gallery-Zx9==/base.apk"}
+  ],
+  "home": "com.example.launcher/.HomeActivity",
+  "home_candidates": ["com.example.launcher/.HomeActivity", "com.android.settings/.FallbackHome"]
+}

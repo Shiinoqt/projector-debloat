@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "name": "Gaimoo GM200",
+  "match": {
+    "ro.product.model": [],
+    "ro.board.platform": []
+  },
+  "android_version": "",
+  "tested_by": [],
+  "notes": "Awaiting first dump from device.",
+  "packages": []
+}
