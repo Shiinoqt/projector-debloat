@@ -72,10 +72,10 @@ class ValidateTest(unittest.TestCase):
             _, errors, _ = pd.read_profile(path)
             self.assertEqual(errors, [], path)
 
-    def test_gm200_skeleton_warns(self):
+    def test_gm200_profile_is_clean(self):
         _, errors, warnings = pd.read_profile(pd.PROFILES_DIR / "gaimoo-gm200.json")
         self.assertEqual(errors, [])
-        self.assertTrue(warnings)
+        self.assertEqual(warnings, [])
 
     def test_validate_command_exit_codes(self):
         with tempfile.TemporaryDirectory() as tmp:

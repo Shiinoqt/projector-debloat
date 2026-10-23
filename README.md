@@ -51,7 +51,7 @@ This re-enables every package that was enabled in the newest snapshot for this m
 
 | Device | Profile | Status |
 |---|---|---|
-| Gaimoo GM200 | [gaimoo-gm200.json](profiles/gaimoo-gm200.json) | Skeleton, awaiting first dump |
+| Gaimoo GM200 | [gaimoo-gm200.json](profiles/gaimoo-gm200.json) | Profile from a real dump; not applied yet |
 
 ## Contributing a device
 
