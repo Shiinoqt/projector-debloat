@@ -7,7 +7,7 @@
     "ro.hardware": ["sun50iw12p1"]
   },
   "android_version": "11",
-  "tested_by": [],
+  "tested_by": ["Shiinoqt"],
   "notes": "Allwinner H713 (sun50iw12p1) with the HTC/Hotack firmware also used by the Portronics Beem 470 and Magcubic HY3xx. The firmware fakes a Google 'ADT-3' identity. Settings UI is com.htc.htcsettings (there is no com.android.settings). Casting (AirPlay/DLNA/Miracast) is kept. The HTC launcher and stock YouTube are 'optional': install a replacement (e.g. Projectivy Launcher, SmartTube) first, then use --include-optional. If the remote's HOME key stops working after a launcher swap, run: settings put secure user_setup_complete 1; settings put global device_provisioned 1.",
   "packages": [
     {"id": "com.htc.eventuploadservice", "tier": "safe", "note": "HTC usage/event telemetry uploader; runs at boot."},

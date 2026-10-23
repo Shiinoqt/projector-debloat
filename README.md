@@ -51,7 +51,7 @@ This re-enables every package that was enabled in the oldest snapshot for this m
 
 | Device | Profile | Status |
 |---|---|---|
-| Gaimoo GM200 | [gaimoo-gm200.json](profiles/gaimoo-gm200.json) | Profile from a real dump; not applied yet |
+| Gaimoo GM200 (Allwinner H713) | [gaimoo-gm200.json](profiles/gaimoo-gm200.json) | Tested; see the [recommended setup](docs/gaimoo-gm200.md) |
 
 ## Contributing a device
 
