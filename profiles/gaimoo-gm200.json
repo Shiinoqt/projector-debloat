@@ -73,7 +73,7 @@
     {"id": "com.android.tv.settings", "tier": "keep", "note": "Android TV settings, reached from the HTC settings."},
     {"id": "com.htc.closedialog", "tier": "keep", "note": "HTC system dialog service; runs at boot; purpose unconfirmed."},
     {"id": "com.htc.samescreen", "tier": "keep", "note": "Screen mirroring app UI."},
-    {"id": "com.mphotool.airplay", "tier": "keep", "note": "AirPlay receiver (screen mirroring from iPhone/Mac)."},
+    {"id": "com.mphotool.airplay", "tier": "optional", "note": "Stock AirPlay receiver (V1.0.1.5, 2025). Fails with iOS 27 (connects, then drops) and holds TCP port 7000, so other AirPlay receivers cannot start. Disable it when installing a replacement such as io.github.jqssun.airplay (free, open source, sideload the GitHub APK; the Play Store says incompatible)."},
     {"id": "com.mphotool.dlna", "tier": "keep", "note": "DLNA media receiver (casting)."},
     {"id": "com.mphotool.usbcastserver", "tier": "keep", "note": "Wired USB phone mirroring."},
     {"id": "com.softwinner.miracastReceiver", "tier": "keep", "note": "Miracast receiver (Android/Windows screen mirroring)."},
