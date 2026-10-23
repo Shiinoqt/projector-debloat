@@ -447,7 +447,8 @@ def change_packages(run, package_ids, enable):
 
 def make_snapshot(device, profile_path):
     return {
-        "created": datetime.now().isoformat(timespec="seconds"),
+        # microseconds: two applies in the same second must still sort, or restore picks the wrong one
+        "created": datetime.now().isoformat(timespec="microseconds"),
         "properties": public_props(device),
         "profile": str(profile_path),
         "packages": package_list(device),
@@ -457,7 +458,10 @@ def make_snapshot(device, profile_path):
 def write_snapshot(snapshot):
     SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
     stamp = datetime.fromisoformat(snapshot["created"]).strftime("%Y%m%d-%H%M%S")
-    path = SNAPSHOT_DIR / "{}-{}.json".format(safe_filename(snapshot["properties"]["ro.product.model"]), stamp)
+    base = "{}-{}".format(safe_filename(snapshot["properties"]["ro.product.model"]), stamp)
+    path, n = SNAPSHOT_DIR / (base + ".json"), 2
+    while path.exists():  # never overwrite: an older snapshot is what restore needs
+        path, n = SNAPSHOT_DIR / "{}-{}.json".format(base, n), n + 1
     write_json(path, snapshot)
     return path
 

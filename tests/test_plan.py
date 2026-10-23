@@ -300,6 +300,20 @@ class CommandsTest(unittest.TestCase):
         self.assertEqual(fake.changes, [("enable", "com.example.ads"), ("enable", "com.example.store")])
         self.assertFalse(fake.packages["com.example.already.off"]["enabled"])
 
+    def test_two_applies_in_one_second_then_restore_undoes_both(self):
+        fake = FakeAdb()
+        same_second = [pd.datetime(2026, 1, 1, 10, 0, 0, 1), pd.datetime(2026, 1, 1, 10, 0, 0, 2)]
+        with mock.patch.object(pd, "datetime", wraps=pd.datetime) as dt:
+            dt.now.side_effect = same_second
+            run_main(["apply", "--profile", str(self.profile_path), "--yes"], fake)
+            run_main(["apply", "--profile", str(self.profile_path), "--include", "com.example.gallery", "--yes"], fake)
+        self.assertEqual(len(list((self.dir / "snapshots").glob("*.json"))), 2)
+        fake.changes.clear()
+        code, out = run_main(["restore", "--yes"], fake)
+        self.assertEqual(code, 0, out)
+        self.assertEqual(sorted(p for _, p in fake.changes),
+                         ["com.example.ads", "com.example.gallery", "com.example.store"])
+
     def test_apply_aborted_changes_nothing(self):
         fake = FakeAdb()
         with mock.patch("builtins.input", return_value="n"):
